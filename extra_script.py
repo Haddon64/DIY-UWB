@@ -3,7 +3,7 @@ import os
 
 SDK_DRIVER = os.path.join(
     env.subst("$PROJECT_DIR"),
-    "SDK", "DW3_QM33_SDK_1.1.1", "Drivers", "API", "Shared", "dwt_uwb_driver"
+    "lib", "dwt_uwb_driver"
 )
 
 # Add include paths

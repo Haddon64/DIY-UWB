@@ -3,7 +3,7 @@ include($ENV{ZEPHYR_BASE}/cmake/app/boilerplate.cmake NO_POLICY_SCOPE)
 project(DIY-UWB)
 
 # ── dwt_uwb_driver (Qorvo DW3110 low-level driver) ───────────────────────────
-set(DWT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../SDK/DW3_QM33_SDK_1.1.1/Drivers/API/Shared/dwt_uwb_driver)
+set(DWT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../lib/dwt_uwb_driver)
 
 target_sources(app PRIVATE
     # Application sources
