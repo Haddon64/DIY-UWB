@@ -208,7 +208,7 @@ static uint16_t cobs_decode(const uint8_t *in, uint16_t in_len,
 }
 
 /* ── UART + COBS framing ───────────────────────────────────────────────────*/
-#define PAYLOAD_MAX  64U
+#define PAYLOAD_MAX  100U
 #define COBS_BUF_MAX (PAYLOAD_MAX + 10U)
 
 static const struct device *uart_dev;
@@ -219,7 +219,7 @@ struct uart_msg {
 	uint8_t len;
 };
 
-K_MSGQ_DEFINE(uart_rx_msgq, sizeof(struct uart_msg), 4, 4);
+K_MSGQ_DEFINE(uart_rx_msgq, sizeof(struct uart_msg), 2, 4);
 
 /* ISR accumulates COBS bytes, decodes on 0x00, enqueues */
 static uint8_t  uart_rx_cobs[COBS_BUF_MAX];
@@ -382,7 +382,7 @@ static uint64_t unpack_ts5(const uint8_t *buf)
 
 static void run_initiator(void)
 {
-	uint8_t rx_buf[128];
+	uint8_t rx_buf[HDR_LEN + 1U + PAYLOAD_MAX + 16U];
 	uint32_t status;
 	uint8_t tx_poll[HDR_LEN + 1U + PAYLOAD_MAX];
 
@@ -503,7 +503,7 @@ static void run_initiator(void)
 
 static void run_responder(void)
 {
-	uint8_t rx_buf[128];
+	uint8_t rx_buf[HDR_LEN + 1U + PAYLOAD_MAX + 16U];
 	uint32_t status;
 	uint8_t tx_resp[RESP_HDR_LEN + PAYLOAD_MAX];
 
