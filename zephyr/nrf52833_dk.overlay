@@ -1,0 +1,76 @@
+/*
+ * DWM3001CDK board overlay for nrf52833_dk (Zephyr 2.7.1)
+ *
+ * DW3110 UWB chip — SPIM3:
+ *   SCK  = P0.03  (pin 3)
+ *   MOSI = P0.08  (pin 8)
+ *   MISO = P0.29  (pin 29)
+ *   CS   = P1.06  (gpio1 pin 6, active low)
+ *   IRQ  = P1.02  (gpio1 pin 2, active high)
+ *   RST  = P0.25  (gpio0 pin 25, active low)
+ *   WKUP = P1.19  (gpio1 pin 19, active high)
+ *
+ * UART0: TX=P0.19  RX=P0.15
+ *
+ * Note: pre-pinctrl style — pins set directly on the peripheral node.
+ */
+
+/* SPIM3 — DW3110 UWB chip (CS managed manually in code) */
+&spi3 {
+	compatible = "nordic,nrf-spim";
+	status = "okay";
+	sck-pin  = <3>;
+	mosi-pin = <8>;
+	miso-pin = <29>;
+	/delete-property/ cs-gpios;
+};
+
+/* UART0 — host serial interface (override nrf52833_dk defaults to free P0.08 for SPI) */
+&uart0 {
+	status = "okay";
+	current-speed = <115200>;
+	tx-pin = <19>;
+	rx-pin = <15>;
+	/delete-property/ rts-pin;
+	/delete-property/ cts-pin;
+	/delete-property/ cts-pull-up;
+};
+
+/* Disable spi1 — not used, avoid any resource conflict */
+&spi1 {
+	status = "disabled";
+};
+
+/* Ensure console goes to our UART0 */
+/ {
+	chosen {
+		zephyr,console = &uart0;
+		zephyr,shell-uart = &uart0;
+	};
+};
+
+/* GPIO aliases for DW3110 control pins */
+/ {
+	aliases {
+		uwb-irq    = &uwb_irq_pin;
+		uwb-rst    = &uwb_rst_pin;
+		uwb-wakeup = &uwb_wakeup_pin;
+	};
+
+	uwb_ctrl_pins {
+		compatible = "gpio-keys";
+
+		uwb_irq_pin: uwb_irq {
+			gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+			label = "UWB IRQ";
+		};
+		uwb_rst_pin: uwb_rst {
+			gpios = <&gpio0 25 GPIO_ACTIVE_LOW>;
+			label = "UWB RST";
+		};
+		uwb_wakeup_pin: uwb_wakeup {
+			gpios = <&gpio1 19 GPIO_ACTIVE_HIGH>;
+			label = "UWB WAKEUP";
+		};
+	};
+};
