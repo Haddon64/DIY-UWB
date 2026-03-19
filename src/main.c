@@ -340,8 +340,8 @@ static dwt_config_t uwb_config = {
 #define RESP_RX_TIMEOUT_UUS     20000U
 #define UUS_TO_DWT              65536UL
 
-#define TX_ANT_DLY  16893U
-#define RX_ANT_DLY  16893U
+#define TX_ANT_DLY  16390U
+#define RX_ANT_DLY  16390U
 
 static uint8_t frame_sn;
 static int32_t last_range_cm = -1;  /* shared between roles */
